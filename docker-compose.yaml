@@ -1,3 +1,12 @@
+x-db-credentials: &db-credentials
+  POSTGRES_USER: og_test_app_user
+  POSTGRES_PASSWORD: og_test_app_password
+  POSTGRES_DB: og_test_app_db
+x-db-connect: &db-connect
+  DATABASE_HOST: db
+  DATABASE_PORT: 5432
+
+
 services:
   frontend:
     build: ./frontend
@@ -11,12 +20,18 @@ services:
       - "3000:3000"
     volumes:
       - ./api:/app
-#  db:
-#    image: postgres:17-alpine
-#    ports:
-#      - "5432:5432"
-#    environment:
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: postgres
-#      POSTGRES_DB: postgres
-
+    environment:
+      <<: [
+        *db-credentials,
+        *db-connect
+      ]
+  db:
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      <<: *db-credentials
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+    db-data:
