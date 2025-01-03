@@ -21,10 +21,13 @@ export class ProductCategoryQueriesResolver {
 
   @Query(() => [ProductCategoryDto])
   async findProductCategories(
-    @Args('condition', { type: () => ProductCategoryFindDto, nullable: true })
+    @Args({
+      name: 'condition',
+      type: () => ProductCategoryFindDto,
+      nullable: true,
+    })
     condition: ProductCategoryFindDto,
   ) {
-    console.log(condition);
     const queryReq = new FindProductCategoriesQuery(condition);
 
     return this.queryBus.execute(queryReq);

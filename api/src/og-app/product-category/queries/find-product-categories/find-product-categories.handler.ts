@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { FindProductCategoriesQuery } from './find-product-categories.query';
 import { ProductCategoryDto } from '../../dtos/product-category.dto';
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductCategory } from '../../entities/product-category.entity';
 
@@ -24,13 +24,13 @@ export class FindProductCategoriesHandler
     }
 
     if (query.ids) {
-      condition.where['id'] = query.ids;
+      condition.where['id'] = In(query.ids);
     }
 
     if (query.name) {
       condition.where['name'] = ILike(`%${query.name}%`);
     }
-    console.log(condition);
+
     return this.productCategoryRepository.find(condition);
   }
 }

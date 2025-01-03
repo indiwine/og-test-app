@@ -18,13 +18,13 @@ type Query {
 
 input ProductCategoryFindDto {
   """Unique identifier of the product category"""
-  id: ID
+  id: Int
 
   """Name of the product category"""
   name: String
 
   """List of unique identifiers of the product categories"""
-  ids: [ID!]
+  ids: [Int!]
 }
 
 type Mutation {
