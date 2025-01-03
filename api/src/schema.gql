@@ -2,6 +2,38 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ProductCategoryDto {
+  """Unique identifier of the product category"""
+  id: ID!
+
+  """Name of the product category"""
+  name: String!
+}
+
 type Query {
   sayHello: String!
+  findOneProductCategory(id: ID!): ProductCategoryDto
+  findProductCategories(condition: ProductCategoryFindDto): [ProductCategoryDto!]!
+}
+
+input ProductCategoryFindDto {
+  """Unique identifier of the product category"""
+  id: ID
+
+  """Name of the product category"""
+  name: String
+
+  """List of unique identifiers of the product categories"""
+  ids: [ID!]
+}
+
+type Mutation {
+  createProductCategory(input: ProductCategoryRequestDto!): ProductCategoryDto!
+  updateProductCategory(id: ID!, input: ProductCategoryRequestDto!): ProductCategoryDto
+  deleteProductCategory(id: ID!): Boolean
+}
+
+input ProductCategoryRequestDto {
+  """Name of the product category"""
+  name: String!
 }
