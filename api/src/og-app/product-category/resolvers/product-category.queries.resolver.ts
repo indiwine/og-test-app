@@ -11,7 +11,10 @@ import { FindProductCategoriesQuery } from '../queries/find-product-categories/f
 export class ProductCategoryQueriesResolver {
   constructor(private queryBus: QueryBus) {}
 
-  @Query(() => ProductCategoryDto, { nullable: true })
+  @Query(() => ProductCategoryDto, {
+    nullable: true,
+    description: 'Find a product category by id',
+  })
   async findOneProductCategory(
     @Args({ name: 'id', type: () => ID }) id: number,
   ) {
@@ -19,7 +22,7 @@ export class ProductCategoryQueriesResolver {
     return await this.queryBus.execute(query);
   }
 
-  @Query(() => [ProductCategoryDto])
+  @Query(() => [ProductCategoryDto], { description: 'Find product categories' })
   async findProductCategories(
     @Args({
       name: 'condition',

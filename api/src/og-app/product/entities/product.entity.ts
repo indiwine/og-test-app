@@ -2,7 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ProductCategory } from '../../product-category/entities/product-category.entity';
@@ -12,16 +12,23 @@ export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true, nullable: false })
+  @Column({ nullable: false })
   name: string;
 
   @Column({ nullable: true, type: 'text' })
   description: string;
 
-  @Column({ type: 'float', nullable: false, default: 0 })
+  // We should use a more precise type for price, like DECIMAL(10, 2)
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+    default: 0,
+  })
   price: number;
 
-  @OneToOne(() => ProductCategory)
+  @ManyToOne(() => ProductCategory)
   @JoinColumn()
   category: ProductCategory;
 }

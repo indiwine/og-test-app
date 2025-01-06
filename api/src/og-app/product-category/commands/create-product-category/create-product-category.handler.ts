@@ -18,10 +18,10 @@ export class CreateProductCategoryHandler
     private readonly productCategoryRepository: Repository<ProductCategory>,
   ) {}
 
-  async execute(
+  execute(
     command: CreateProductCategoryCommand,
   ): Promise<ProductCategoryGraphqlResponseDto> {
     const { payload } = command;
-    return await this.productCategoryRepository.save(payload);
+    return this.productCategoryRepository.save(payload);
   }
 }

@@ -10,9 +10,31 @@ type ProductCategoryDto {
   name: String!
 }
 
+type ProductDto {
+  """Unique identifier of the product"""
+  id: Int!
+
+  """Name of the product"""
+  name: String!
+
+  """Description of the product"""
+  description: String
+
+  """Price of the product"""
+  price: Float!
+
+  """Category of the product"""
+  category: ProductCategoryDto!
+}
+
 type Query {
+  """Returns a greeting message"""
   sayHello: String!
+
+  """Find a product category by id"""
   findOneProductCategory(id: ID!): ProductCategoryDto
+
+  """Find product categories"""
   findProductCategories(condition: ProductCategoryFindDto): [ProductCategoryDto!]!
 }
 
@@ -28,9 +50,37 @@ input ProductCategoryFindDto {
 }
 
 type Mutation {
+  """Create a new product"""
+  createProduct(input: ProductRequestDto!): ProductDto!
+
+  """Update a product"""
+  updateProduct(id: Int!, input: ProductRequestDto!): ProductDto
+
+  """Delete a product"""
+  deleteProduct(id: Int!): Boolean
+
+  """Create a new product category"""
   createProductCategory(input: ProductCategoryRequestDto!): ProductCategoryDto!
+
+  """Update a product category"""
   updateProductCategory(id: ID!, input: ProductCategoryRequestDto!): ProductCategoryDto
+
+  """Delete a product category (unrecoverable)"""
   deleteProductCategory(id: ID!): Boolean
+}
+
+input ProductRequestDto {
+  """Name of the product"""
+  name: String!
+
+  """Description of the product"""
+  description: String
+
+  """Price of the product"""
+  price: Float!
+
+  """Category of the product"""
+  category: Int!
 }
 
 input ProductCategoryRequestDto {
