@@ -31,11 +31,28 @@ type Query {
   """Returns a greeting message"""
   sayHello: String!
 
+  """Find products"""
+  findProducts(condition: FindProductDto): [ProductDto!]!
+
   """Find a product category by id"""
   findOneProductCategory(id: ID!): ProductCategoryDto
 
   """Find product categories"""
   findProductCategories(condition: ProductCategoryFindDto): [ProductCategoryDto!]!
+}
+
+input FindProductDto {
+  """Unique identifier of the product"""
+  id: Int
+
+  """Name of the product"""
+  name: String
+
+  """Sort field"""
+  sortField: String = "id"
+
+  """Sort direction (ASC or DESC)"""
+  sortDirection: String = "DESC"
 }
 
 input ProductCategoryFindDto {

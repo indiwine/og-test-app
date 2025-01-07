@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { FindProductCategoriesQuery } from './find-product-categories.query';
 import { ProductCategoryDto } from '../../dtos/product-category.dto';
-import { ILike, In, Repository } from 'typeorm';
+import { FindManyOptions, ILike, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductCategory } from '../../entities/product-category.entity';
 
@@ -15,7 +15,7 @@ export class FindProductCategoriesHandler
   ) {}
 
   execute(query: FindProductCategoriesQuery): Promise<ProductCategoryDto[]> {
-    const condition = {
+    const condition: FindManyOptions<ProductCategory> = {
       where: {},
     };
 

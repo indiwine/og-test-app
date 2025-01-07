@@ -8,6 +8,8 @@ import {
 } from '@nestjs/graphql';
 import { ProductCategoryDto } from '../../product-category/dtos/product-category.dto';
 import {
+  IsIn,
+  IsInt,
   IsNumber,
   IsOptional,
   IsString,
@@ -60,6 +62,31 @@ export class ProductRequestDto {
   @Field(() => Int, { description: 'Category of the product' })
   @IsNumber()
   category: number;
+}
+
+@InputType()
+@ArgsType()
+export class FindProductDto {
+  @Field(() => Int, { description: 'Unique identifier of the product', nullable: true })
+  @IsInt()
+  @IsOptional()
+  id?: number;
+
+  @Field(() => String, { description: 'Name of the product', nullable: true })
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @Field(() => String, { description: 'Sort field', nullable: true })
+  @IsString()
+  @IsOptional()
+  sortField?: string = 'id';
+
+  @Field(() => String, { description: 'Sort direction (ASC or DESC)', nullable: true })
+  @IsString()
+  @IsOptional()
+  @IsIn(['ASC', 'DESC'])
+  sortDirection?: 'ASC' | 'DESC' = 'DESC';
 }
 
 export type ProductRequestOptionalDto = Partial<ProductRequestDto>;

@@ -18,6 +18,7 @@ services:
     build: ./api
     ports:
       - "3000:3000"
+      - "9229:9229"
     volumes:
       - ./api:/app
     environment:
