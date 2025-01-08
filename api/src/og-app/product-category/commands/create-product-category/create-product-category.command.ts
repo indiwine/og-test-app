@@ -1,5 +1,5 @@
-import { ProductCategoryOptionalDto } from '../../dtos/product-category.dto';
+import { ProductCategoryCreatDto } from '../../dtos/product-category.dto';
 
 export class CreateProductCategoryCommand {
-  constructor(readonly payload: ProductCategoryOptionalDto) {}
+  constructor(readonly payload: ProductCategoryCreatDto) {}
 }

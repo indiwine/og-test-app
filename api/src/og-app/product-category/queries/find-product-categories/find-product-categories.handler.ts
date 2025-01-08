@@ -1,21 +1,21 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { FindProductCategoriesQuery } from './find-product-categories.query';
 import { ProductCategoryDto } from '../../dtos/product-category.dto';
-import { FindManyOptions, ILike, In, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ProductCategory } from '../../entities/product-category.entity';
+import { Inject } from '@nestjs/common';
+import { PrismaService } from '../../../../prisma-module/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @QueryHandler(FindProductCategoriesQuery)
 export class FindProductCategoriesHandler
   implements IQueryHandler<FindProductCategoriesQuery, ProductCategoryDto[]>
 {
   constructor(
-    @InjectRepository(ProductCategory)
-    private readonly productCategoryRepository: Repository<ProductCategory>,
+    @Inject(PrismaService)
+    private readonly prismaService: PrismaService,
   ) {}
 
   execute(query: FindProductCategoriesQuery): Promise<ProductCategoryDto[]> {
-    const condition: FindManyOptions<ProductCategory> = {
+    const condition: Prisma.ProductCategoryFindManyArgs = {
       where: {},
     };
 
@@ -24,13 +24,13 @@ export class FindProductCategoriesHandler
     }
 
     if (query.ids) {
-      condition.where['id'] = In(query.ids);
+      condition.where['id'] = { in: query.ids };
     }
 
     if (query.name) {
-      condition.where['name'] = ILike(`%${query.name}%`);
+      condition.where['name'] = { contains: query.name, mode: 'insensitive' };
     }
 
-    return this.productCategoryRepository.find(condition);
+    return this.prismaService.productCategory.findMany(condition);
   }
 }

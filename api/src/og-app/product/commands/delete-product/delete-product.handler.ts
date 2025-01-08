@@ -1,22 +1,31 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeleteProductCommand } from './delete-product.command';
 import { NullOrTrue } from '../../../common/types/null-or-true.type';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from '../../entities/product.entity';
-import { Repository } from 'typeorm';
+import { Inject } from '@nestjs/common';
+import { PrismaService } from '../../../../prisma-module/prisma.service';
 
 @CommandHandler(DeleteProductCommand)
 export class DeleteProductHandler
   implements ICommandHandler<DeleteProductCommand, NullOrTrue>
 {
   constructor(
-    @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,
+    @Inject(PrismaService)
+    private readonly prismaService: PrismaService,
   ) {}
 
   async execute(command: DeleteProductCommand): Promise<NullOrTrue> {
     const { id } = command;
-    const deleteResult = await this.productRepository.delete(id);
-    return deleteResult.affected ? true : null;
+    try {
+      const deleteResult = await this.prismaService.product.delete({
+        where: { id },
+      });
+      return deleteResult ? true : null;
+    } catch (error) {
+      // Check if this is "Record does not exist" error
+      if (error.code === 'P2025') {
+        return null;
+      }
+      throw error;
+    }
   }
 }

@@ -82,11 +82,11 @@ export class FindProductDto {
   @IsOptional()
   sortField?: string = 'id';
 
-  @Field(() => String, { description: 'Sort direction (ASC or DESC)', nullable: true })
+  @Field(() => String, { description: 'Sort direction (asc or desc)', nullable: true })
   @IsString()
   @IsOptional()
-  @IsIn(['ASC', 'DESC'])
-  sortDirection?: 'ASC' | 'DESC' = 'DESC';
+  @IsIn(['asc', 'desc'])
+  sortDirection?: 'asc' | 'desc' = 'desc';
 }
 
 export type ProductRequestOptionalDto = Partial<ProductRequestDto>;

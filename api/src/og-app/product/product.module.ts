@@ -1,6 +1,4 @@
 import { Module, Provider } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from './entities/product.entity';
 import { CreateProductHandler } from './commands/create-product/create-product.handler';
 import { ProductCommandsResolver } from './resolvers/product.commands.resolver';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -15,10 +13,13 @@ const commandHandlers: Provider[] = [
   DeleteProductHandler,
 ];
 const queryHandlers: Provider[] = [FindProductHandler];
-const graphqlResolvers: Provider[] = [ProductCommandsResolver, ProductQueriesResolver];
+const graphqlResolvers: Provider[] = [
+  ProductCommandsResolver,
+  ProductQueriesResolver,
+];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product]), CqrsModule],
+  imports: [CqrsModule],
   controllers: [],
   providers: [...commandHandlers, ...queryHandlers, ...graphqlResolvers],
 })

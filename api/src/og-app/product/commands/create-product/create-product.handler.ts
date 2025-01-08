@@ -1,28 +1,31 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateProductCommand } from './create-product.command';
 import { ProductDto } from '../../dtos/product.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from '../../entities/product.entity';
-import { Repository } from 'typeorm';
-import { ProductCategory } from '../../../product-category/entities/product-category.entity';
+import { Inject } from '@nestjs/common';
+import { PrismaService } from '../../../../prisma-module/prisma.service';
 
 @CommandHandler(CreateProductCommand)
 export class CreateProductHandler
   implements ICommandHandler<CreateProductCommand, ProductDto>
 {
   constructor(
-    @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,
+    @Inject(PrismaService)
+    private readonly prismaService: PrismaService,
   ) {}
 
   async execute(command: CreateProductCommand): Promise<ProductDto> {
     const { payload } = command;
-    const newProduct = this.productRepository.create({
-      ...payload,
-      category: { id: payload.category } as unknown as Partial<ProductCategory>,
+    const newProduct = await this.prismaService.product.create({
+      data: {
+        ...payload,
+        category: { connect: { id: payload.category } },
+      },
+      include: { category: true },
     });
-    const product = await this.productRepository.save(newProduct);
-    console.log(product);
-    return product;
+
+    return {
+      ...newProduct,
+      price: newProduct.price.toNumber(),
+    };
   }
 }

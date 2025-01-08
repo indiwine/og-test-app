@@ -1,17 +1,9 @@
-import {
-  Args,
-  Int,
-  Mutation,
-  Parent,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
 import { ProductDto, ProductRequestDto } from '../dtos/product.dto';
 import { CreateProductCommand } from '../commands/create-product/create-product.command';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { DeleteProductCommand } from '../commands/delete-product/delete-product.command';
 import { UpdateProductCommand } from '../commands/update-product/update-product.command';
-import { FindOneProductCategoryQuery } from '../../product-category/queries/find-one-product-category/find-one-product-category.query';
 
 @Resolver(() => ProductDto)
 export class ProductCommandsResolver {
@@ -42,11 +34,5 @@ export class ProductCommandsResolver {
   deleteProduct(@Args({ name: 'id', type: () => Int }) id: number) {
     const command = new DeleteProductCommand(id);
     return this.commandBus.execute(command);
-  }
-
-  @ResolveField()
-  async category(@Parent() product: ProductDto) {
-    const query = new FindOneProductCategoryQuery(product.category.id);
-    return this.queryBus.execute(query);
   }
 }

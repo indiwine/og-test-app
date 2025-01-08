@@ -5,8 +5,8 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'node:path';
 import { HelloResolverService } from './hello.resolver/hello.resolver.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { OgAppModule } from './og-app/og-app.module';
+import { PrismaModuleModule } from './prisma-module/prisma-module.module';
 import * as process from 'node:process';
 
 @Module({
@@ -16,17 +16,8 @@ import * as process from 'node:process';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: Number(process.env.DATABASE_PORT),
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DB,
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
     OgAppModule,
+    PrismaModuleModule,
   ],
   controllers: [AppController],
   providers: [AppService, HelloResolverService],

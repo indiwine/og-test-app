@@ -30,6 +30,7 @@ export class ProductCategoryDto {
 
 export type ProductCategoryGraphqlResponseDto = ProductCategoryDto;
 export type ProductCategoryOptionalDto = Partial<ProductCategoryDto>;
+export type ProductCategoryCreatDto = Omit<ProductCategoryDto, 'id'>;
 
 @ArgsType()
 @InputType()

@@ -1,9 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateProductCategoryCommand } from './update-product-category.command';
 import { ProductCategoryDto } from '../../dtos/product-category.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ProductCategory } from '../../entities/product-category.entity';
-import { Repository } from 'typeorm';
+import { Inject } from '@nestjs/common';
+import { PrismaService } from '../../../../prisma-module/prisma.service';
 
 @CommandHandler(UpdateProductCategoryCommand)
 export class UpdateProductCategoryHandler
@@ -11,26 +10,27 @@ export class UpdateProductCategoryHandler
     ICommandHandler<UpdateProductCategoryCommand, ProductCategoryDto | null>
 {
   constructor(
-    @InjectRepository(ProductCategory)
-    private readonly productCategoryRepository: Repository<ProductCategory>,
+    @Inject(PrismaService)
+    private readonly prismaService: PrismaService,
   ) {}
 
-  async execute(
+  execute(
     command: UpdateProductCategoryCommand,
   ): Promise<ProductCategoryDto | null> {
     const { id, payload } = command;
 
-    const updateResult = await this.productCategoryRepository.update(
-      id,
-      payload,
-    );
-
-    if (updateResult.affected) {
-      return await this.productCategoryRepository.findOne({
+    try {
+      return this.prismaService.productCategory.update({
         where: { id },
+        data: payload,
       });
-    }
+    } catch (error) {
+      // Check if this is "Record does not exist" error
+      if (error.code === 'P2025') {
+        return null;
+      }
 
-    return null;
+      throw error;
+    }
   }
 }

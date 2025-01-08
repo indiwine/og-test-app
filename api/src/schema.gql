@@ -35,7 +35,7 @@ type Query {
   findProducts(condition: FindProductDto): [ProductDto!]!
 
   """Find a product category by id"""
-  findOneProductCategory(id: ID!): ProductCategoryDto
+  findOneProductCategory(id: Int!): ProductCategoryDto
 
   """Find product categories"""
   findProductCategories(condition: ProductCategoryFindDto): [ProductCategoryDto!]!
@@ -51,8 +51,8 @@ input FindProductDto {
   """Sort field"""
   sortField: String = "id"
 
-  """Sort direction (ASC or DESC)"""
-  sortDirection: String = "DESC"
+  """Sort direction (asc or desc)"""
+  sortDirection: String = "desc"
 }
 
 input ProductCategoryFindDto {
@@ -80,10 +80,10 @@ type Mutation {
   createProductCategory(input: ProductCategoryRequestDto!): ProductCategoryDto!
 
   """Update a product category"""
-  updateProductCategory(id: ID!, input: ProductCategoryRequestDto!): ProductCategoryDto
+  updateProductCategory(id: Int!, input: ProductCategoryRequestDto!): ProductCategoryDto
 
   """Delete a product category (unrecoverable)"""
-  deleteProductCategory(id: ID!): Boolean
+  deleteProductCategory(id: Int!): Boolean
 }
 
 input ProductRequestDto {

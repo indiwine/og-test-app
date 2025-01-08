@@ -1,37 +1,38 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { FindProductQuery } from './find-product.query';
 import { ProductDto } from '../../dtos/product.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from '../../entities/product.entity';
-import { FindManyOptions, ILike, Repository } from 'typeorm';
+import { Inject } from '@nestjs/common';
+import { PrismaService } from '../../../../prisma-module/prisma.service';
 
 @QueryHandler(FindProductQuery)
 export class FindProductHandler
   implements IQueryHandler<FindProductQuery, ProductDto[]>
 {
   constructor(
-    @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,
+    @Inject(PrismaService)
+    private readonly prismaService: PrismaService,
   ) {}
 
-  execute(query: FindProductQuery): Promise<ProductDto[]> {
-    const condition: FindManyOptions<Product> = {
-      where: {},
-      order: { [query.sortField]: query.sortDirection },
-    };
-
-    if (query.includeCategory) {
-      condition.relations = ['category'];
-    }
+  async execute(query: FindProductQuery): Promise<ProductDto[]> {
+    const where: any = {};
 
     if (query.id) {
-      condition.where['id'] = query.id;
+      where.id = query.id;
     }
 
     if (query.name) {
-      condition.where['name'] = ILike(`%${query.name}%`);
+      where.name = { contains: query.name, mode: 'insensitive' };
     }
 
-    return this.productRepository.find(condition);
+    const products = await this.prismaService.product.findMany({
+      where,
+      orderBy: { [query.sortField]: query.sortDirection },
+      include: { category: query.includeCategory },
+    });
+
+    return products.map((product) => ({
+      ...product,
+      price: product.price.toNumber(),
+    }));
   }
 }

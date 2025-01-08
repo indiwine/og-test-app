@@ -1,4 +1,4 @@
-import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   ProductCategoryDto,
@@ -25,7 +25,7 @@ export class ProductCategoryCommandsResolver {
     description: 'Update a product category',
   })
   async updateProductCategory(
-    @Args({ name: 'id', type: () => ID }) id: number,
+    @Args({ name: 'id', type: () => Int }) id: number,
     @Args('input') input: ProductCategoryRequestDto,
   ) {
     const command = new UpdateProductCategoryCommand(id, input);
@@ -37,7 +37,7 @@ export class ProductCategoryCommandsResolver {
     description: 'Delete a product category (unrecoverable)',
   })
   async deleteProductCategory(
-    @Args({ name: 'id', type: () => ID }) id: number,
+    @Args({ name: 'id', type: () => Int }) id: number,
   ) {
     const command = new DeleteProductCategoryCommand(id);
     return await this.commandBus.execute(command);
