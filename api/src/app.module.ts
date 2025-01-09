@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'node:path';
-import { HelloResolverService } from './hello.resolver/hello.resolver.service';
-import { OgAppModule } from './og-app/og-app.module';
-import { PrismaModuleModule } from './prisma-module/prisma-module.module';
+import { PrismaModule } from './prisma-module/prisma.module';
 import * as process from 'node:process';
+import { ProductModule } from './product/product.module';
+import { ProductCategoryModule } from './product-category/product-category.module';
+import { ConfigModule } from '@nestjs/config';
+import databaseConfig from './config/database.config';
 
 @Module({
   imports: [
@@ -16,10 +16,15 @@ import * as process from 'node:process';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true,
     }),
-    OgAppModule,
-    PrismaModuleModule,
+    ConfigModule.forRoot({
+      load: [databaseConfig],
+      ignoreEnvFile: true,
+    }),
+    ProductModule,
+    ProductCategoryModule,
+    PrismaModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, HelloResolverService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

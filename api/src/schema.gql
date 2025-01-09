@@ -28,9 +28,6 @@ type ProductDto {
 }
 
 type Query {
-  """Returns a greeting message"""
-  sayHello: String!
-
   """Find products"""
   findProducts(condition: FindProductDto): [ProductDto!]!
 
